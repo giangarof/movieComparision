@@ -4,8 +4,8 @@ import axios from 'axios'
 
 const key = '13e27bcd'
 
-const leftMovie = ref([])
-const rightMovie = ref([])
+const leftMovie = ref(null)
+const rightMovie = ref(null)
 const inputLeft = ref('')
 const inputRight = ref('')
 
@@ -22,10 +22,8 @@ const fetch = async(s) => {
 }
 
 const handleSubmit = async(side, search) => {
-  // console.log(search)
   if(side == 'left'){
     leftMovie.value = await fetch(inputLeft.value)
-    // console.log(resLeft)
   } else if (side == 'right'){
     rightMovie.value = await fetch(inputRight.value)
   }
@@ -35,10 +33,13 @@ const handleSubmit = async(side, search) => {
 
 <template>
 
-  <div class="mt-4">
-    <h1 class="text-gray-800 text-center mb-5">Movie Comparision</h1>
+  <div class="">
+    <div class="bg-slate-300 pt-5 pb-5 text-center text-green-500 font-bold">
+      <h1>Movie Comparision</h1>
+      <h2>With Vue.js</h2>
+    </div>
 
-    <div class="flex flex-row justify-evenly">
+    <div class="flex flex-row justify-evenly mt-4">
 
       <form @submit.prevent="handleSubmit('left')" class="flex">
         <button type="submit" class="text-gray-700 bg-green-300 p-2 rounded-l-md">Search</button>
@@ -53,13 +54,43 @@ const handleSubmit = async(side, search) => {
 
     <!-- <p v-if="!leftMovie.length || !rightMovie.length">Start searching!</p> -->
 
-      <div v-if="leftMovie.length">
-        <ul>
-          <li v-for="x in leftMovie" :key='x.imdbID'>
-            <p>{{x.Title}}</p>
-          </li>
-        </ul>
+    <div class="flex flex-row">
+
+      <p v-if="!leftMovie && !rightMovie" class="text-center w-full text-green-500 font-bold">
+        Start searching in any side!
+      </p>
+
+      <div v-if="leftMovie" class="flex flex-col w-6/12 items-center mt-5">
+        <img :src="leftMovie.Poster" alt="" >
+        <div class="w-6/12">
+
+          <p>Director: {{leftMovie.Director}}</p>
+          <p>Genre: {{leftMovie.Genre}}</p>
+          <p>{{leftMovie.Plot}}</p>
+          <p>Meta Score: {{leftMovie.Metascore}}</p>
+          <div>
+            <p>Awards: {{leftMovie.Awards}}</p>
+            <p>Box Office: {{leftMovie.BoxOffice}}</p>
+          </div>
+        </div>
       </div>
+
+      <div v-if="rightMovie" class="flex flex-col w-6/12 items-center mt-5">
+        <img :src="rightMovie.Poster" alt="" >
+        <div class="w-6/12">
+
+          <p>Director: {{rightMovie.Director}}</p>
+          <p>Genre: {{rightMovie.Genre}}</p>
+          <p>{{rightMovie.Plot}}</p>
+          <p>Meta Score: {{rightMovie.Metascore}}</p>
+          <div>
+            <p>Awards: {{rightMovie.Awards}}</p>
+            <p>Box Office: {{rightMovie.BoxOffice}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div>
 
     </div>
