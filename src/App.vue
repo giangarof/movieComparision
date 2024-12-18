@@ -9,23 +9,65 @@ const rightMovie = ref(null)
 const inputLeft = ref('')
 const inputRight = ref('')
 
-const fetch = async(s) => {
+const suggestionsleft = ref([]);
+const suggestionsright = ref([]);
+
+
+// fetch movies by typing
+const fetch = async(search, side) => {
   try {
     const res = await axios.get('https://www.omdbapi.com/', {
-      params: { apiKey: key, t: s}
+      params: { apiKey: key, s: search}
     })
-    console.log(res.data)
+    console.log(search, side)
+
+    if(side == 'left'){
+      suggestionsleft.value = res?.data?.Search
+    } else if (side == 'right'){
+      suggestionsright.value = res?.data?.Search
+    }
+    
+    // suggestionsright.value = res.data.Search
     return res.data
   } catch (error) {
     
   }
 }
 
+const debounce = (func, delay) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+};
+
+// Debounce the fetchSuggestions function
+const debouncedFetchSuggestions = debounce((input, side) => fetch(input, side), 300);
+
+
+
+//Fetch selected movies
+const fetchSingle = async(s) => {
+  try {
+    const res = await axios.get('https://www.omdbapi.com/', {
+      params: { apiKey: key, t: s}
+    })
+    console.log(s)
+    // leftMovie.value = res.data.Search
+    suggestionsleft.value = []
+    suggestionsright.value = []
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const handleSubmit = async(side, search) => {
   if(side == 'left'){
-    leftMovie.value = await fetch(inputLeft.value)
+    leftMovie.value = await fetchSingle(inputLeft.value)
   } else if (side == 'right'){
-    rightMovie.value = await fetch(inputRight.value)
+    rightMovie.value = await fetchSingle(inputRight.value)
   }
 }
 
@@ -40,17 +82,36 @@ const handleSubmit = async(side, search) => {
     </div>
 
     <div class="flex flex-row justify-evenly mt-4">
+      <div>
+        <form @submit.prevent="handleSubmit('left')" class="flex">
+          <button type="submit" class="text-gray-700 bg-green-300 p-2 rounded-l-md">Search</button>
+          <input @input="debouncedFetchSuggestions(inputLeft, 'left')" type="text" v-model="inputLeft" class="border-2 focus:outline-none">
+        </form>
+        <ul v-if="suggestionsleft.length" class="absolute bg-white border rounded  max-h-32 overflow-y-auto w-4/12">
+          <li v-for="(suggestion, index) in suggestionsleft" :key="index" @click="inputLeft = suggestion.Title;"
+            class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-row items-center gap-1"
+          >
+            <img :src="suggestion.Poster" alt="" class="size-20" >
+            {{ suggestion.Title }} ({{ suggestion.Year }})
+          </li>
+        </ul>
+      </div>
 
-      <form @submit.prevent="handleSubmit('left')" class="flex">
-        <button type="submit" class="text-gray-700 bg-green-300 p-2 rounded-l-md">Search</button>
-        <input type="text" v-model="inputLeft" class="border-2 focus:outline-none">
-      </form>
-
-      <form @submit.prevent="handleSubmit('right')" class="flex">
-        <input type="text" v-model="inputRight" class="border-2 focus:outline-none">
-        <button type="submit" class="text-gray-700 bg-green-300 p-2 rounded-r-md">Search</button>
-      </form>
-    </div>
+      <div>
+        <form @submit.prevent="handleSubmit('right')" class="flex">
+          <input @input="debouncedFetchSuggestions(inputRight, 'right')" type="text" v-model="inputRight" class="border-2 focus:outline-none">
+          <button type="submit" class="text-gray-700 bg-green-300 p-2 rounded-r-md">Search</button>
+        </form>
+        <ul v-if="suggestionsright.length" class="absolute bg-white border rounded  max-h-32 overflow-y-auto w-4/12">
+            <li v-for="(suggestion, index) in suggestionsright" :key="index" @click="inputRight = suggestion.Title;"
+              class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-row items-center gap-1"
+            >
+              <img :src="suggestion.Poster" alt="" class="size-20" >
+              {{ suggestion.Title }} ({{ suggestion.Year }})
+            </li>
+          </ul>
+      </div>
+      </div>
 
     <!-- <p v-if="!leftMovie.length || !rightMovie.length">Start searching!</p> -->
 
