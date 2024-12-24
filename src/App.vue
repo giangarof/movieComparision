@@ -45,8 +45,6 @@ const debounce = (func, delay) => {
 // Debounce the fetchSuggestions function
 const debouncedFetchSuggestions = debounce((input, side) => fetch(input, side), 300);
 
-
-
 //Fetch selected movies
 const fetchSingle = async(s) => {
   try {
@@ -71,23 +69,34 @@ const handleSubmit = async(side, search) => {
   }
 }
 
+const clearSuggestions = () => {
+  suggestionsleft.value = [];
+  suggestionsright.value = [];
+};
+
 </script>
 
 <template>
 
-  <div class="">
+  <div @click="clearSuggestions" class="">
+
+    <!-- header -->
     <div class="bg-slate-300 pt-5 pb-5 text-center text-green-500 font-bold">
       <h1>Movie Comparision</h1>
       <h2>With Vue.js</h2>
-    </div>
+    </div> 
 
+    <!-- main -->
     <div class="flex flex-row justify-evenly mt-4">
-      <div>
+      <!-- left -->
+      <div @click.stop class="">
+      
         <form @submit.prevent="handleSubmit('left')" class="flex">
           <button type="submit" class="text-gray-700 bg-green-300 p-2 rounded-l-md">Search</button>
           <input @input="debouncedFetchSuggestions(inputLeft, 'left')" type="text" v-model="inputLeft" class="border-2 focus:outline-none">
         </form>
-        <ul v-if="suggestionsleft.length" class="absolute bg-white border rounded  max-h-32 overflow-y-auto w-4/12">
+
+        <ul v-if="suggestionsleft.length" class="absolute bg-white border rounded max-h-48 overflow-y-auto">
           <li v-for="(suggestion, index) in suggestionsleft" :key="index" @click="inputLeft = suggestion.Title;"
             class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-row items-center gap-1"
           >
@@ -97,26 +106,26 @@ const handleSubmit = async(side, search) => {
         </ul>
       </div>
 
-      <div>
+      <!-- right -->
+      <div class="">
         <form @submit.prevent="handleSubmit('right')" class="flex">
           <input @input="debouncedFetchSuggestions(inputRight, 'right')" type="text" v-model="inputRight" class="border-2 focus:outline-none">
           <button type="submit" class="text-gray-700 bg-green-300 p-2 rounded-r-md">Search</button>
         </form>
-        <ul v-if="suggestionsright.length" class="absolute bg-white border rounded  max-h-32 overflow-y-auto w-4/12">
-            <li v-for="(suggestion, index) in suggestionsright" :key="index" @click="inputRight = suggestion.Title;"
-              class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-row items-center gap-1"
-            >
-              <img :src="suggestion.Poster" alt="" class="size-20" >
-              {{ suggestion.Title }} ({{ suggestion.Year }})
-            </li>
-          </ul>
+        <ul v-if="suggestionsright.length" class="absolute bg-white border rounded max-h-48 overflow-y-auto">
+          <li v-for="(suggestion, index) in suggestionsright" 
+            :key="index" 
+            @click="inputRight = suggestion.Title;"
+            class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex flex-row items-center gap-1">
+            <img :src="suggestion.Poster" alt="" class="size-20" >
+            {{ suggestion.Title }} ({{ suggestion.Year }})
+          </li>
+        </ul>
       </div>
-      </div>
+    </div>
 
-    <!-- <p v-if="!leftMovie.length || !rightMovie.length">Start searching!</p> -->
-
+    <!-- right -->
     <div class="flex flex-row">
-
       <p v-if="!leftMovie && !rightMovie" class="text-center w-full text-green-500 font-bold">
         Start searching in any side!
       </p>
@@ -151,10 +160,7 @@ const handleSubmit = async(side, search) => {
         </div>
       </div>
     </div>
-
-    <div>
-
-    </div>
+    
   </div>
   
 </template>
