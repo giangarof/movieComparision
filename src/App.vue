@@ -131,33 +131,38 @@ const clearSuggestions = () => {
       </p>
 
       <div v-if="leftMovie" class="flex flex-col w-6/12 items-center mt-5">
-        <img :src="leftMovie.Poster" alt="" >
-        <div class="w-6/12">
+        <div class="bg-slate-200 p-2 flex flex-col justify-center w-6/12 rounded-lg">
+          <img :src="leftMovie.Poster" alt="" >
 
-          <p>Director: {{leftMovie.Director}}</p>
-          <p>Genre: {{leftMovie.Genre}}</p>
-          <p>{{leftMovie.Plot}}</p>
-          <p>Meta Score: {{leftMovie.Metascore}}</p>
-          <div>
-            <p>Awards: {{leftMovie.Awards}}</p>
-            <p>Box Office: {{leftMovie.BoxOffice}}</p>
+          <div class="w-full flex flex-col gap-3 p-2 mt-3 p">
+            <p>{{leftMovie.Plot}}</p>
+            <p>Director: {{leftMovie.Director}}</p>
+            <p>Genre: {{leftMovie.Genre}}</p>
+            <p>Meta Score: {{leftMovie.Metascore}}</p>
+              <p>Awards: {{leftMovie.Awards}}</p>
+              <p>Box Office: {{leftMovie.BoxOffice}}</p>
+            <div>
+            </div>
           </div>
-        </div>
+      </div>
+
       </div>
 
       <div v-if="rightMovie" class="flex flex-col w-6/12 items-center mt-5">
-        <img :src="rightMovie.Poster" alt="" >
-        <div class="w-6/12">
+      <div class="bg-slate-200 p-2 flex flex-col justify-center w-6/12 rounded-lg">
 
+        <img :src="rightMovie.Poster" alt="" >
+        <div class="w-full flex flex-col gap-3 p-2 mt-3 p">
+          <p>{{rightMovie.Plot}}</p>
           <p>Director: {{rightMovie.Director}}</p>
           <p>Genre: {{rightMovie.Genre}}</p>
-          <p>{{rightMovie.Plot}}</p>
           <p>Meta Score: {{rightMovie.Metascore}}</p>
+          <p>Awards: {{rightMovie.Awards}}</p>
+          <p>Box Office: {{rightMovie.BoxOffice}}</p>
           <div>
-            <p>Awards: {{rightMovie.Awards}}</p>
-            <p>Box Office: {{rightMovie.BoxOffice}}</p>
           </div>
         </div>
+      </div>
       </div>
     </div>
     
@@ -166,5 +171,14 @@ const clearSuggestions = () => {
 </template>
 
 <style scoped>
+
+.p > p{
+  color: #fff;
+  font-weight: 700;
+  margin-top:4px;
+  background-color: teal;
+  border-radius: 4px;
+  padding: 4px;
+}
 
 </style>
