@@ -22,9 +22,9 @@ const fetch = async(search, side) => {
     console.log(search, side)
 
     if(side == 'left'){
-      suggestionsleft.value = res?.data?.Search
+      suggestionsleft.value = res?.data?.Search || []
     } else if (side == 'right'){
-      suggestionsright.value = res?.data?.Search
+      suggestionsright.value = res?.data?.Search || []
     }
     
     // suggestionsright.value = res.data.Search
